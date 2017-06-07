@@ -1,0 +1,106 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package cs401.k142185.a2p1;
+
+import java.util.Scanner;
+
+/**
+ *
+ * @author Dell-Pc
+ */
+public class CS401K142185A2P1 {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        Game game=new Game(4,6);
+        State initialBoard = new State(game);
+        Scanner in = new Scanner(System.in);
+        System.out.println("Enter max depth for MinMax");    
+        int maxDepthforMinMax=in.nextInt();
+        System.out.println("Enter max depth for AlphaBeta");    
+        int maxDepthforAlphaBeta=in.nextInt();
+        Algorithms algo = new Algorithms(maxDepthforMinMax,maxDepthforAlphaBeta);
+        
+        /*
+            This project contain Input.txt file where you can change the board.
+            Current status of file is that it contain empty board but you can change it
+            and run the algorithm from that given board configuration.
+        
+        */
+        
+        System.out.println("\"1\" : For Computer");
+        System.out.println("\"2\" : For User");
+        System.out.println("\"0\" : For Empty Box");
+        
+        System.out.println("Current Status of Board");
+        initialBoard.printState();
+        System.out.println("\nSelect the algorithm\nPress \"1\" for MinMax\nPress \"2\" for AlphaBeta\n");
+        int selectAlgo= in.nextInt();
+        int action=6;
+        State currentState= algo.copy(initialBoard);
+        int currentTurn=1;  // I Assume that You want the new action for Player "1" i.e Computer
+        System.out.println("Waiting....");
+        if(selectAlgo == 1)
+            action = algo.applyMinMax(currentState, currentTurn);
+            
+        if(selectAlgo == 2)    
+            action = algo.alphaBetaPruning(currentState, currentTurn);
+        
+        System.out.println("Algorithm Select "+action);
+        System.out.println("New State will be");
+        currentState = currentState.result(currentState, action, currentTurn);
+        currentState.printState();
+        // Since it is deterministic algorithm then for every step it give same answer i.e
+        // for initial empty board condition it always give "0" as action because it is deterministic
+        // so for human it seems little akward and human can easily guess  next move  after playing some games
+        // to get the non deterministic criteria either use variable depth size for each action or use
+        // non deterministic algorithm like monte carlo tree search.
+        
+        // To Play a proper game versus computer uncomment the following code:
+        /*
+        Game game=new Game(4,6);
+        game.SetEmptyBoard();
+        State initialBoard = new State(game);
+        Algorithms algo = new Algorithms(6,6);
+        State currentState= algo.copy(initialBoard);
+        int currentTurn= 2;
+        int action=0;
+        Scanner in = new Scanner(System.in);
+        do{
+            currentTurn = Player.switchTurn(currentTurn);
+            if(currentTurn == 1){
+                //action = algo.applyMinMax(currentState, currentTurn);
+                action = algo.alphaBetaPruning(currentState, currentTurn);
+                
+                System.out.println("Action by Computer: "+ action);
+                
+            }
+            
+            if(currentTurn == 2){
+                do{
+                    System.out.println("");
+                    System.out.println("Enter column postion from {0,1,2,3,4,5} if applicable");
+                    action = in.nextInt();
+                }while(!currentState.ifActionIsApplicable(currentState, action));
+            }
+            System.out.println("");
+            currentState = currentState.result(currentState, action, currentTurn);
+            currentState.printState();
+            System.out.println("");
+            
+        }while(!algo.terminalTest(currentState, currentTurn)  && !algo.endState(currentState));
+        
+        if(algo.endState(currentState) && !algo.terminalTest(currentState, currentTurn))
+            System.out.println("Draw!!");
+        else
+            System.out.println("win:" + currentTurn);
+        
+        */
+    }
+    
+}
